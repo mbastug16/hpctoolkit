@@ -3261,11 +3261,11 @@ raw_as_core_matrix[item.core_id][current_core] = raw_as_core_matrix[item.core_id
                         if(sType == ALL_LOAD){
                             double increment = global_load_sampling_period * thread_coefficient(me);
                             inc_read_count((uint64_t) data_addr, me, increment);
-                            inc_write_count((uint64_t) item.address, me, increment);
+                            //inc_write_count((uint64_t) item.address, me, increment);
                         } else if(sType == ALL_STORE){
                             double increment = global_store_sampling_period * thread_coefficient(me);
                             inc_write_count((uint64_t) data_addr, me, increment);
-                            inc_write_count((uint64_t) item.address, me, increment);
+                            //inc_write_count((uint64_t) item.address, me, increment);
                         }
                     }
 #endif
@@ -3365,6 +3365,12 @@ raw_as_core_matrix[item.core_id][current_core] = raw_as_core_matrix[item.core_id
 				  hashInsertwithTime(inserted_item, storeCurTime, storeLastTime);
 				  //__sync_synchronize();
 				  bulletinBoard.counter++;
+#if ADAMANT_USED
+                    if(getenv(HPCRUN_OBJECT_LEVEL)) {
+                        double increment = global_store_sampling_period * thread_coefficient(me);
+                        inc_write_count((uint64_t) data_addr, me, increment);
+                    }
+#endif
 				}
 			      }
 			    }
