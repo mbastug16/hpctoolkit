@@ -20,13 +20,13 @@ extern double fs_core_matrix[2000][2000];
 extern double ts_core_matrix[2000][2000];
 extern double as_core_matrix[2000][2000];
 
-extern double war_fs_matrix[2000][2000];
-extern double war_ts_matrix[2000][2000];
-extern double war_as_matrix[2000][2000];
+extern double raw_fs_matrix[2000][2000];
+extern double raw_ts_matrix[2000][2000];
+extern double raw_as_matrix[2000][2000];
 
-extern double war_fs_core_matrix[2000][2000];
-extern double war_ts_core_matrix[2000][2000];
-extern double war_as_core_matrix[2000][2000];
+extern double raw_fs_core_matrix[2000][2000];
+extern double raw_ts_core_matrix[2000][2000];
+extern double raw_as_core_matrix[2000][2000];
 
 extern double waw_fs_matrix[2000][2000];
 extern double waw_ts_matrix[2000][2000];
@@ -71,13 +71,13 @@ void dump_fs_core_matrix();
 void dump_ts_core_matrix();
 void dump_as_core_matrix();
 
-void dump_war_fs_matrix();
-void dump_war_ts_matrix();
-void dump_war_as_matrix();
+void dump_raw_fs_matrix();
+void dump_raw_ts_matrix();
+void dump_raw_as_matrix();
 
-void dump_war_fs_core_matrix();
-void dump_war_ts_core_matrix();
-void dump_war_as_core_matrix();
+void dump_raw_fs_core_matrix();
+void dump_raw_ts_core_matrix();
+void dump_raw_as_core_matrix();
 
 void dump_waw_fs_matrix();
 void dump_waw_ts_matrix();
@@ -101,15 +101,15 @@ extern double cache_line_transfer;
 extern double cache_line_transfer_millions;
 extern double cache_line_transfer_gbytes;
 
-extern double war_fs_volume;
-extern double war_fs_core_volume;
-extern double war_ts_volume;
-extern double war_ts_core_volume;
-extern double war_as_volume;
-extern double war_as_core_volume;
-extern double war_cache_line_transfer;
-extern double war_cache_line_transfer_millions;
-extern double war_cache_line_transfer_gbytes;
+extern double raw_fs_volume;
+extern double raw_fs_core_volume;
+extern double raw_ts_volume;
+extern double raw_ts_core_volume;
+extern double raw_as_volume;
+extern double raw_as_core_volume;
+extern double raw_cache_line_transfer;
+extern double raw_cache_line_transfer_millions;
+extern double raw_cache_line_transfer_gbytes;
 
 extern double waw_fs_volume;
 extern double waw_fs_core_volume;

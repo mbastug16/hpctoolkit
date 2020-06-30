@@ -1490,7 +1490,7 @@ static WPTriggerActionType ComDetectiveWPCallback(WatchPointInfo_t *wpi, int sta
       }
 #endif
       ts_matrix[index1][index2] = ts_matrix[index1][index2] + increment;
-      war_ts_matrix[index1][index2] = war_ts_matrix[index1][index2] + increment;
+      raw_ts_matrix[index1][index2] = raw_ts_matrix[index1][index2] + increment;
      if(core_id1 != core_id2) {
 #if ADAMANT_USED
         if(getenv(HPCRUN_OBJECT_LEVEL)) {
@@ -1515,7 +1515,7 @@ static WPTriggerActionType ComDetectiveWPCallback(WatchPointInfo_t *wpi, int sta
         }
 #endif
 	ts_core_matrix[core_id1][core_id2] = ts_core_matrix[core_id1][core_id2] + increment;
-    war_ts_core_matrix[core_id1][core_id2] = war_ts_core_matrix[core_id1][core_id2] + increment;
+    raw_ts_core_matrix[core_id1][core_id2] = raw_ts_core_matrix[core_id1][core_id2] + increment;
      }
 
     } else {
@@ -1552,7 +1552,7 @@ static WPTriggerActionType ComDetectiveWPCallback(WatchPointInfo_t *wpi, int sta
       }
 #endif
       fs_matrix[index1][index2] = fs_matrix[index1][index2] + increment;
-      war_fs_matrix[index1][index2] = war_fs_matrix[index1][index2] + increment;
+      raw_fs_matrix[index1][index2] = raw_fs_matrix[index1][index2] + increment;
  if(core_id1 != core_id2) {
 #if ADAMANT_USED
         if(getenv(HPCRUN_OBJECT_LEVEL)) {
@@ -1577,16 +1577,20 @@ static WPTriggerActionType ComDetectiveWPCallback(WatchPointInfo_t *wpi, int sta
         }
 #endif
 	fs_core_matrix[core_id1][core_id2] = fs_core_matrix[core_id1][core_id2] + increment;
-    war_fs_core_matrix[core_id1][core_id2] = war_fs_core_matrix[core_id1][core_id2] + increment;
+    raw_fs_core_matrix[core_id1][core_id2] = raw_fs_core_matrix[core_id1][core_id2] + increment;
      }
     }
     as_matrix[index1][index2] = as_matrix[index1][index2] + increment;
-    war_as_matrix[index1][index2] = war_as_matrix[index1][index2] + increment;
+    raw_as_matrix[index1][index2] = raw_as_matrix[index1][index2] + increment;
  if(core_id1 != core_id2) {
       as_core_matrix[core_id1][core_id2] = as_core_matrix[core_id1][core_id2] + increment; 
-      war_as_core_matrix[core_id1][core_id2] = war_as_core_matrix[core_id1][core_id2] + increment;
+      raw_as_core_matrix[core_id1][core_id2] = raw_as_core_matrix[core_id1][core_id2] + increment;
  }
-    // tprev = ts2
+#if ADAMANT_USED
+                    if(getenv(HPCRUN_OBJECT_LEVEL)) {
+                        inc_read_count((uint64_t) wt->va, index2, increment);
+                    }
+#endif    // tprev = ts2
     prev_timestamp = wpi->sample.bulletinBoardTimestamp;
   }
   else if (flag == 2) { // Store trap (WAW)
@@ -1718,7 +1722,11 @@ static WPTriggerActionType ComDetectiveWPCallback(WatchPointInfo_t *wpi, int sta
       as_core_matrix[core_id1][core_id2] = as_core_matrix[core_id1][core_id2] + increment; 
       waw_as_core_matrix[core_id1][core_id2] = waw_as_core_matrix[core_id1][core_id2] + increment;
  }
-    // tprev = ts2
+#if ADAMANT_USED
+                    if(getenv(HPCRUN_OBJECT_LEVEL)) {
+                        inc_write_count((uint64_t) wt->va, index2, increment);
+                    }
+#endif    // tprev = ts2
     prev_timestamp = wpi->sample.bulletinBoardTimestamp;
   }
 
@@ -2900,7 +2908,7 @@ SET_FS_WP: ReadSharedDataTransactionally(&localSharedData);
                               if(sType == ALL_STORE)
                                 store_all_store++;
                             }
-			    uint64_t curtime = rdtsc() 
+			    uint64_t curtime = rdtsc();
 
 			    int64_t storeCurTime = 0;
 			    if(sType == ALL_STORE /*accessType == STORE || accessType == LOAD_AND_STORE*/)
@@ -3011,7 +3019,7 @@ SET_FS_WP: ReadSharedDataTransactionally(&localSharedData);
 #endif
                                     // ends
 				    ts_matrix[item.tid][me] = ts_matrix[item.tid][me] + increment;
-	                war_ts_matrix[item.tid][me] = war_ts_matrix[item.tid][me] + increment;
+	                raw_ts_matrix[item.tid][me] = raw_ts_matrix[item.tid][me] + increment;
     if(item.core_id != current_core) {
 #if ADAMANT_USED
                                       if(getenv(HPCRUN_OBJECT_LEVEL)) {
@@ -3036,7 +3044,7 @@ SET_FS_WP: ReadSharedDataTransactionally(&localSharedData);
                                       }
 #endif
 				      ts_core_matrix[item.core_id][current_core] = ts_core_matrix[item.core_id][current_core] + increment;
-	war_ts_core_matrix[item.core_id][current_core] = war_ts_core_matrix[item.core_id][current_core] + increment;        			    }
+	raw_ts_core_matrix[item.core_id][current_core] = raw_ts_core_matrix[item.core_id][current_core] + increment;        			    }
 				  } else {
 				    /*falseWWIns ++;
 				      metricId =  false_ww_metric_id;
@@ -3070,7 +3078,7 @@ SET_FS_WP: ReadSharedDataTransactionally(&localSharedData);
                                     }
 #endif
 				    fs_matrix[item.tid][me] = fs_matrix[item.tid][me] + increment;
-	                war_fs_matrix[item.tid][me] = fs_matrix[item.tid][me] + increment;
+	                raw_fs_matrix[item.tid][me] = fs_matrix[item.tid][me] + increment;
 			    if(item.core_id != current_core) {
 #if ADAMANT_USED
                                       if(getenv(HPCRUN_OBJECT_LEVEL)) {
@@ -3095,14 +3103,14 @@ SET_FS_WP: ReadSharedDataTransactionally(&localSharedData);
                                       }
 #endif
 				      fs_core_matrix[item.core_id][current_core] = fs_core_matrix[item.core_id][current_core] + increment;
-	war_fs_core_matrix[item.core_id][current_core] = war_fs_core_matrix[item.core_id][current_core] + increment;
+	raw_fs_core_matrix[item.core_id][current_core] = raw_fs_core_matrix[item.core_id][current_core] + increment;
 			    }
 				  }
 				  as_matrix[item.tid][me] = as_matrix[item.tid][me] + increment;
-	            war_as_matrix[item.tid][me] = war_as_matrix[item.tid][me] + increment;
+	            raw_as_matrix[item.tid][me] = raw_as_matrix[item.tid][me] + increment;
                 if(item.core_id != current_core) {
 				    as_core_matrix[item.core_id][current_core] = as_core_matrix[item.core_id][current_core] + increment;
-war_as_core_matrix[item.core_id][current_core] = war_as_core_matrix[item.core_id][current_core] + increment;
+raw_as_core_matrix[item.core_id][current_core] = raw_as_core_matrix[item.core_id][current_core] + increment;
 				  }	
 				  // tprev = ts2
 				  prev_timestamp = item.time;
@@ -3351,7 +3359,17 @@ war_as_core_matrix[item.core_id][current_core] = war_as_core_matrix[item.core_id
 			      }
 			    }
 			    // ends
-
+#if ADAMANT_USED
+                    if(getenv(HPCRUN_OBJECT_LEVEL)) {
+                        if(sType == ALL_LOAD){
+                            double increment = global_load_sampling_period * thread_coefficient(me);
+                            inc_read_count((uint64_t) data_addr, me, increment);
+                        } else if(sType == ALL_STORE){
+                            double increment = global_store_sampling_period * thread_coefficient(me);
+                            inc_write_count((uint64_t) data_addr, me, increment);
+                        }
+                    }
+#endif
 			    lastTime = curtime;
 			    if( sType == ALL_STORE  /*accessType == STORE || accessType == LOAD_AND_STORE*/)
 			      storeLastTime = storeCurTime;
@@ -3376,12 +3394,12 @@ void dump_comdetective_matrices() {
     dump_ts_core_matrix();
     dump_as_matrix();
     dump_as_core_matrix();
-    dump_war_fs_matrix();
-    dump_war_fs_core_matrix();
-    dump_war_ts_matrix();
-    dump_war_ts_core_matrix();
-    dump_war_as_matrix();
-    dump_war_as_core_matrix();
+    dump_raw_fs_matrix();
+    dump_raw_fs_core_matrix();
+    dump_raw_ts_matrix();
+    dump_raw_ts_core_matrix();
+    dump_raw_as_matrix();
+    dump_raw_as_core_matrix();
     dump_waw_fs_matrix();
     dump_waw_fs_core_matrix();
     dump_waw_ts_matrix();
